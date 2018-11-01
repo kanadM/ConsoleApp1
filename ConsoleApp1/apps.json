@@ -1,0 +1,22 @@
+{
+  "Users": [ "NK", "kmehta", "vihan" ],
+  "Stations": [ "NGP", "BPL", "NDLS", "ET" ],
+  "OtherOutletNames": {
+    "ANNAPURNA VAISHNAV BHOJNALYA": "ANNAPURNA VAISHNAV BHOJNALYA$$Ammapurna Vaishnav Bhojnalya$$Annapurna Vaishnav Bhojnalaya",
+    "Krishnam2": "asdf1$$awer1$$adsfz1",
+    "Arya Bhawan Restaurant": "Arya Bhawan$$Arya Bhawan Restaurant$$Aryabhawan$$Aryabhavan",
+    "Brindavans ice and spice": "Brindavans ice and spice$$Brindavans ice and spice restau",
+    "Yoginee Restaurant": "Yoginee Restaurant$$Yoginee Restaurant Lounge",
+    "shri ganesh bhandar": "shri ganesh bhandar$$shree ganesh bhandar"
+  },
+  "IgnoreOutletList": [ "DOMINOS PIZZA", "DOMINO'S PIZZA", "Comesum Restaurant pvt. Ltd" ],
+  "IgnoreVendorList": [ "DOMINOS PIZZA", "Comesum Restaurant pvt. Ltd" ],
+  "Root_Path_nk": "",
+  "Root_Path_kmehta": "D:\\Excel\\Trapigo\\",
+  "Root_Path_vihan": "E:\\Kanad\\Trapigo\\",
+  "BPL_SupervisorCols": [ "Order Id", "Vendor Name", "Delivery Date", "Transaction Type", "Order Status", "Pickup Boy", "Delivery Boy", "IRCTC Dashboard Amount", "Amount received from customer", "Delivery Charges", "Trapigo Payment To Vendor", "Trapigo Remarks" ], //"Bulk order charges",
+  //"BPL_SupervisorCols": [ "Order Id", "Vendor Name", "Delivery Date", "Transaction Type", "Order Status", "Pickup Boy", "Delivery Boy", "IRCTC Dashboard Amount", "Amount received from customer", "Delivery Charges", "Trapigo Payment To Vendor", "Trapigo Remarks" ],
+  "ET_SupervisorCols": [ "Order Id", "Vendor Name", "Delivery Date", "Transaction Type", "Order Status", "Pickup Boy", "Delivery Boy", "IRCTC Dashboard Amount", "Amount received from customer", "Delivery Charges", "Trapigo Payment To Vendor", "Trapigo Remarks" ],
+  "NDLS_SupervisorCols": [ "Order Id", "Vendor Name", "Delivery Date", "Transaction Type", "Order Status", "Pickup Boy", "Delivery Boy", "IRCTC Dashboard Amount", "Amount received from customer", "Delivery Charges", "Trapigo Payment To Vendor", "Trapigo Remarks" ],
+  "NGP_SupervisorCols": [ "Order Id", "Vendor Name", "Delivery Date", "Transaction Type", "Order Status", "Pickup Boy", "Delivery Boy", "IRCTC Dashboard Amount", "Amount received from customer", "Delivery Charges", "Trapigo Payment To Vendor", "Trapigo Remarks" ]
+}
