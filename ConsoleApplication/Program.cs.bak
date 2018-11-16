@@ -9,9 +9,8 @@ using Microsoft.Extensions.Configuration.Json;
 using System.Linq;
 using System.Diagnostics;
 
-namespace ConsoleApp1
+namespace ConsoleApplication
 {
-
     public class Program
     {
         private static List<String> Users
@@ -94,11 +93,7 @@ namespace ConsoleApp1
         public static string STN;
         public static void Main(string[] args)
         {
-            //bool done = true;
-            //var lines = File.ReadAllLines(@"C:\Users\kmehta\source\repos\ConsoleApp1\ConsoleApp1\DeliveryChargeRec.cs").Where(arg => !string.IsNullOrWhiteSpace(arg));
-            //File.WriteAllLines(@"C:\Users\kmehta\source\repos\ConsoleApp1\ConsoleApp1\DeliveryChargeRec.cs", lines);
-            //if (done)
-            //    return;
+
             if (string.IsNullOrWhiteSpace(TrapigoRootDirectory))
             {
                 Console.WriteLine("No file path set for this user, please add new file path in appsetting.json file");
@@ -108,6 +103,7 @@ namespace ConsoleApp1
             if (Users.Contains(Environment.UserName.ToLower()))
                 do
                 {
+					Console.Clear();
                     Console.WriteLine("Enter Station Code");
                     STN = Console.ReadLine();
                     List<string> STNs = configuration.GetSection("Stations").GetChildren().Select(s => s.Value.ToUpper()).ToList();
@@ -125,6 +121,8 @@ namespace ConsoleApp1
 
                     FileInfo taskFile;
                     DirectoryInfo taskDirectory;
+                    DateTime startDate = DateTime.MinValue;
+                    DateTime endDate = DateTime.MinValue;
 
                     switch (choice)
                     {

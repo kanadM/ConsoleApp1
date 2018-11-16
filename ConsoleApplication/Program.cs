@@ -9,9 +9,8 @@ using Microsoft.Extensions.Configuration.Json;
 using System.Linq;
 using System.Diagnostics;
 
-namespace ConsoleApp1
+namespace ConsoleApplication
 {
-
     public class Program
     {
         private static List<String> Users
@@ -108,6 +107,7 @@ namespace ConsoleApp1
             if (Users.Contains(Environment.UserName.ToLower()))
                 do
                 {
+					Console.Clear();
                     Console.WriteLine("Enter Station Code");
                     STN = Console.ReadLine();
                     List<string> STNs = configuration.GetSection("Stations").GetChildren().Select(s => s.Value.ToUpper()).ToList();

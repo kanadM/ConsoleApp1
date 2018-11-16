@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleApp1\ConsoleApp1.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="CustomWebHostService.cs">
       <SubType>Component</SubType>
     </Compile>
