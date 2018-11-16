@@ -239,7 +239,7 @@ namespace ConsoleApplication
                                 OutletReconworksheet.PRE_PAID.Add(tempReconRec);
                         }
                     }
-                } 
+                }
 
                 Console.Clear();
                 foreach (var rec in supervisorTable)
@@ -281,16 +281,43 @@ namespace ConsoleApplication
                             OutletWiseReconWorksheet.ElementAt(i).Value.PRE_PAID.Add(tempReconRec);
 
                         Console.Clear();
-                    } 
+                    }
                 addBody(Worksheets, OutletWiseReconWorksheet);
+                if (OutletWiseReconWorksheet.Keys.Count == cashToVendor.Count)
+                    updateCashToVendor(package.Workbook);
                 package.Save();
             }
 
         }
 
+        private void updateCashToVendor(ExcelWorkbook workbook)
+        {
+            ExcelWorksheet cashToVendorWorksheet = workbook.Worksheets[$"Cash to Vendors"];
+            int row = 5, srNo = 1;
+            var temp = new OfficeOpenXml.FormulaParsing.ExcelCalculationOption { AllowCirculareReferences = false };
 
+            foreach (var item in cashToVendor)
+            {
+                row++;
 
+                cashToVendorWorksheet.Cells[$"B{row}"].Value = srNo++;
 
+                cashToVendorWorksheet.Cells[$"C{row},E{row}"].Merge = true;
+                cashToVendorWorksheet.Cells[$"C{row},E{row}"].Value = textInfo.ToTitleCase(workbook.Worksheets[item.Item1].Name);
+                cashToVendorWorksheet.Cells[$"C{row},E{row}"].Style.Font.Italic = true;
+                cashToVendorWorksheet.Cells[$"H{row}"].Value = Convert.ToDouble(workbook.Worksheets[item.Item1].Calculate(workbook.Worksheets[item.Item1].Cells[item.Item3].Formula, temp).ToString());
+                cashToVendorWorksheet.Cells[$"J{row}"].Value = Convert.ToDouble(workbook.Worksheets[item.Item1].Calculate(workbook.Worksheets[item.Item1].Cells[item.Item3].Formula, temp).ToString());
+                cashToVendorWorksheet.Cells[$"K{row}"].Value = Convert.ToDouble(workbook.Worksheets[item.Item1].Calculate(workbook.Worksheets[item.Item1].Cells[item.Item4].Formula, temp).ToString());
+
+                cashToVendorWorksheet.Cells[$"H{row}"].Style.Numberformat.Format = "#,##0.00";
+                cashToVendorWorksheet.Cells[$"J{row}"].Style.Numberformat.Format = "#,##0.00";
+                cashToVendorWorksheet.Cells[$"K{row}"].Style.Numberformat.Format = "#,##0.00";
+
+                cashToVendorWorksheet.Cells[$"B{row},K{row}"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                cashToVendorWorksheet.Cells[$"B{row},K{row}"].Style.Font.Size = 11;
+
+            }
+        }
 
         private void addHeader(ExcelWorksheet tempWorksheet, string outletName)
         {
@@ -328,7 +355,7 @@ namespace ConsoleApplication
 
             tempWorksheet.Cells["A4:N4"].AutoFitColumns();
         }
-
+        List<Tuple<int, string, string, string>> cashToVendor = new List<Tuple<int, string, string, string>>();
         private void addBody(Dictionary<string, ExcelWorksheet> worksheets, Dictionary<string, ReconWorksheet> outletWiseReconWorksheet)
         {
             ExcelWorksheet _tempWorksheet;
@@ -366,8 +393,8 @@ namespace ConsoleApplication
                             goodDeliveryCharges.Add(row);
                         }
                         else //Cancelled order format for order status column
-                        { 
-							_tempWorksheet.Cells[row, 8].Value="Cancelled";
+                        {
+                            _tempWorksheet.Cells[row, 8].Value = "Cancelled";
                             _tempWorksheet.Cells[row, 8].Style.Font.Color.SetColor(Color.FromArgb(156, 0, 0));
                             _tempWorksheet.Cells[row, 8].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                             _tempWorksheet.Cells[row, 8].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 199, 206));
@@ -375,8 +402,8 @@ namespace ConsoleApplication
                         }
                         if (rec.IsUndelivered)
                         {
-							_tempWorksheet.Cells[row, 8].Value="Undelivered";
-							_tempWorksheet.Cells[row, 8].Style.Font.Color.SetColor(Color.FromArgb(156, 0, 0));
+                            _tempWorksheet.Cells[row, 8].Value = "Undelivered";
+                            _tempWorksheet.Cells[row, 8].Style.Font.Color.SetColor(Color.FromArgb(156, 0, 0));
                             _tempWorksheet.Cells[row, 8].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                             _tempWorksheet.Cells[row, 8].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 199, 206));
                             _tempWorksheet.Cells[row, 11].Style.Font.Color.SetColor(Color.Red);
@@ -420,9 +447,11 @@ namespace ConsoleApplication
 
                     _tempWorksheet.Cells[row, 10].Formula = goodDeliveryCharges.Any() ? $"=SUM({string.Join(",", goodDeliveryCharges.Select(s => "J" + s.ToString()).ToList())})" : "=0";
                     _tempWorksheet.Cells[row, 10].Style.Numberformat.Format = "#,##0.00";
+                    string DeliveryCharges = _tempWorksheet.Cells[row, 10].Address;
 
                     _tempWorksheet.Cells[row, 11].Formula = $"=SUM(K5:K{row - 1})";
                     _tempWorksheet.Cells[row, 11].Style.Numberformat.Format = "#,##0.00";
+                    string asPerReconsillarValue = _tempWorksheet.Cells[row, 11].Address;
 
                     int totalChiRow = row;
                     _tempWorksheet.Cells[row, 12].Formula = $"=SUM(L5:L{row - 1})";
@@ -462,9 +491,10 @@ namespace ConsoleApplication
                     _tempWorksheet.Cells[row, 11].Formula = $"=K{totalChiRow}";
                     _tempWorksheet.Cells[row, 11].Style.Numberformat.Format = "#,##0.00";
                     _tempWorksheet.Cells[row, 11].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
-
+                    string asPerSupervisorValue = _tempWorksheet.Cells[row, 11].Address;
                     _tempWorksheet.Cells[$"H{row - 2}:K{row}"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                     _tempWorksheet.Cells[$"H{row - 2}:K{row}"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 242, 204));
+                    cashToVendor.Add(new Tuple<int, string, string, string>(_tempWorksheet.Index, asPerSupervisorValue, asPerReconsillarValue, DeliveryCharges));
 
                 }
                 if (outletReconWorksheet.Value.PRE_PAID.Any())
@@ -499,7 +529,7 @@ namespace ConsoleApplication
                         }
                         else //Cancelled order format for order status column
                         {
-							_tempWorksheet.Cells[row, 8].Value="Cancelled";
+                            _tempWorksheet.Cells[row, 8].Value = "Cancelled";
                             _tempWorksheet.Cells[row, 8].Style.Font.Color.SetColor(Color.FromArgb(156, 0, 0));
                             _tempWorksheet.Cells[row, 8].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                             _tempWorksheet.Cells[row, 8].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 199, 206));
@@ -552,6 +582,8 @@ namespace ConsoleApplication
                 }
             }
         }
+
+
 
         private void addFooter(ExcelWorksheet tempWorksheet)
         {
@@ -652,24 +684,24 @@ namespace ConsoleApplication
                 ExcelWorksheet workSheet = OrderMISPkg.Workbook.Worksheets[1];
                 for (int i = 2; i <= workSheet.Dimension.Rows; i++)
                     if (!string.IsNullOrWhiteSpace(workSheet.Cells[i, 1].Value?.ToString()))
-                         {
-							int col = 1;
-							var rec = new SupervisorRec();
-							rec.Order_Id = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Vendor_Name = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Delivery_Date = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Transaction_Type = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Order_Status = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Pickup_Boy = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Delivery_Boy = workSheet.Cells[i, col++].Value?.ToString();
-							rec.IRCTC_Dashboard_Amount = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Amount_received_from_customer = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Delivery_Charges = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Bulk_Order_Charges = bulkOrderAmountColumnExist ? workSheet.Cells[i, col++].Value?.ToString() : "0";
-							rec.Trapigo_Payment_To_Vendor = workSheet.Cells[i, col++].Value?.ToString();
-							rec.Trapigo_Remarks = workSheet.Cells[i, col++].Value?.ToString();
-							Records.Add(rec);
-						}
+                    {
+                        int col = 1;
+                        var rec = new SupervisorRec();
+                        rec.Order_Id = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Vendor_Name = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Delivery_Date = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Transaction_Type = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Order_Status = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Pickup_Boy = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Delivery_Boy = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.IRCTC_Dashboard_Amount = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Amount_received_from_customer = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Delivery_Charges = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Bulk_Order_Charges = bulkOrderAmountColumnExist ? workSheet.Cells[i, col++].Value?.ToString() : "0";
+                        rec.Trapigo_Payment_To_Vendor = workSheet.Cells[i, col++].Value?.ToString();
+                        rec.Trapigo_Remarks = workSheet.Cells[i, col++].Value?.ToString();
+                        Records.Add(rec);
+                    }
             }
             return Records;
         }
@@ -743,9 +775,9 @@ namespace ConsoleApplication
             return true;
 
         }
-        
-		
-		private bool bulkOrderAmountColumnExist = false;
+
+
+        private bool bulkOrderAmountColumnExist = false;
         private bool SupervisorTableColumnNamesAreCorrect()
         {
             bool isBulkClmnExist = false;
@@ -760,7 +792,7 @@ namespace ConsoleApplication
                     isBulkClmnExist = workSheet.Cells[1, i].Value.ToString().ToLower().Trim().StartsWith("bulk");
                     if (isBulkClmnExist) //skip bulk order column from excel sheet
                     {
-						Console.WriteLine("found bulk chrges column");
+                        Console.WriteLine("found bulk chrges column");
                         i++;
                         bulkOrderAmountColumnExist = true;
                     }
@@ -789,7 +821,7 @@ namespace ConsoleApplication
                                                     "Delivery Date",
                                                     "Delivery Charges"
                                                    };
-			Console.WriteLine(supervisor);
+            Console.WriteLine(supervisor);
             using (ExcelPackage OrderMISPkg = new ExcelPackage(new FileInfo(supervisor)))
             {
                 ExcelWorksheet workSheet = OrderMISPkg.Workbook.Worksheets[2];
