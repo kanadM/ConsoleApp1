@@ -69,10 +69,8 @@ namespace ConsoleApplication
 
             return null;
         }
-        public static string GivenDataDirectory(this string dateWiseFolder)
-        {
-            return dateWiseFolder + "\\Given Data\\";
-        }
-     
+
+        public static string GivenDataDirectory(this string dateWiseFolder) => dateWiseFolder + "\\Given Data\\";
+
     }
 }

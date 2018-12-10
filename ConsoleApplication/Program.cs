@@ -55,7 +55,7 @@ namespace ConsoleApplication
 
         public static DateTime startDate = DateTime.MinValue;
         public static DateTime endDate = DateTime.MinValue;
-        private static string supervisorReportFilePath, MasterFilePath, ReconnFilePath,OutletWiseReportFilePath;
+        private static string supervisorReportFilePath, MasterFilePath, ReconnFilePath, OutletWiseReportFilePath;
         private static List<string> OutletWiseReportFilePaths;
 
         public static string dateWiseDirectory
@@ -87,7 +87,7 @@ namespace ConsoleApplication
                 return $"Outlet_wise_{Program.startDate.ToString("dd")}_{Program.startDate.ToString("MMM")}-{Program.endDate.ToString("dd")}_{Program.endDate.ToString("MMM")}_{Program.STN}_Report.xlsx";
             }
         }
-        
+
 
         public static DateTime selectedDate;
         public static string STN;
@@ -107,7 +107,7 @@ namespace ConsoleApplication
             if (Users.Contains(Environment.UserName.ToLower()))
                 do
                 {
-					Console.Clear();
+                    Console.Clear();
                     Console.WriteLine("Enter Station Code");
                     STN = Console.ReadLine();
                     List<string> STNs = configuration.GetSection("Stations").GetChildren().Select(s => s.Value.ToUpper()).ToList();
@@ -330,6 +330,13 @@ namespace ConsoleApplication
                                     continue;
                                 }
                             }
+                            taskDirectory = new DirectoryInfo(TrapigoRootDirectory);
+                            String tempString = $"*Order-MIS-{STN}-{startDate.ToString("dd-MM-yy")}_{endDate.ToString("dd-MM-yy")}*";
+                            if (taskDirectory.GetFiles(tempString).Any())
+                            {
+                                taskFile = taskDirectory.GetFiles(tempString).FirstOrDefault();
+                                MasterFilePath = taskFile.FullName;
+                            }
                             MergeOutletReports();
                             break;
                         default:
@@ -361,13 +368,13 @@ namespace ConsoleApplication
                 //    Verb = "open"
                 //});
             }
-            
+
             //Console.ReadLine();
             Console.Clear();
         }
         private static void MergeOutletReports()
         {
-            MergedOutletReportBuilder rb = new MergedOutletReportBuilder(OutletWiseReportFilePaths);
+            MergedOutletReportBuilder rb = new MergedOutletReportBuilder(MasterFilePath,OutletWiseReportFilePaths);
             foreach (var item in otherOutletNames)
                 rb.otherNamesForSameOutlet.Add(item.Key, item.Value?.ToString().Split("$$").ToList());
 
@@ -382,10 +389,11 @@ namespace ConsoleApplication
                 //    Verb = "open"
                 //});
             }
-			else{
-				Console.ReadLine();	
-			}
-    
+            else
+            {
+                Console.ReadLine();
+            }
+
             Console.Clear();
         }
 

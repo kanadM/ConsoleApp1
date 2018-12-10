@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesigningPatterns", "Design
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApplication", "ConsoleApplication\ConsoleApplication.csproj", "{2DDA028A-9362-47B0-8E9E-E5B780613526}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelToHtmlConverter", "ExcelToHtmlConverter\ExcelToHtmlConverter.csproj", "{6F736A5F-98B0-440E-9D1F-0943A799E3EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2DDA028A-9362-47B0-8E9E-E5B780613526}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DDA028A-9362-47B0-8E9E-E5B780613526}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DDA028A-9362-47B0-8E9E-E5B780613526}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F736A5F-98B0-440E-9D1F-0943A799E3EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F736A5F-98B0-440E-9D1F-0943A799E3EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F736A5F-98B0-440E-9D1F-0943A799E3EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F736A5F-98B0-440E-9D1F-0943A799E3EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
