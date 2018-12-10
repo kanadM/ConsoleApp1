@@ -53,8 +53,8 @@ namespace ConsoleApplication
             }
         }
 
-        private static DateTime startDate = DateTime.MinValue;
-        private static DateTime endDate = DateTime.MinValue;
+        public static DateTime startDate = DateTime.MinValue;
+        public static DateTime endDate = DateTime.MinValue;
         private static string supervisorReportFilePath, MasterFilePath, ReconnFilePath,OutletWiseReportFilePath;
         private static List<string> OutletWiseReportFilePaths;
 
@@ -382,8 +382,10 @@ namespace ConsoleApplication
                 //    Verb = "open"
                 //});
             }
-
-            //Console.ReadLine();
+			else{
+				Console.ReadLine();	
+			}
+    
             Console.Clear();
         }
 

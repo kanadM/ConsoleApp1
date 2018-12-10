@@ -52,6 +52,9 @@ namespace ConsoleApplication
             catch (Exception ex)
             {
                 ErrorMessages.Add(ex.StackTrace);
+				Console.WriteLine(ex.StackTrace); 
+				Console.WriteLine("---------------------------"); 
+				Console.WriteLine(ex.Message); 
             }
             if (Errors.Count > 0)
                 return false;
@@ -60,6 +63,11 @@ namespace ConsoleApplication
 
         private void CreateOutletReport(Dictionary<string, List<ReconnRec>> sheet)
         {
+			Console.WriteLine("These are list of sheet will be contains in merged outletwise report>>");
+			foreach(var xkv in sheet)
+				Console.WriteLine(xkv.Key);
+			
+			Console.WriteLine();
             string fileName = Program.FortnightlyOutletWiseReportFileName;
             if (File.Exists(Path.Combine(Program.TrapigoRootDirectory, fileName)))
             {
@@ -90,7 +98,7 @@ namespace ConsoleApplication
             {
                 foreach (var kv in sheet)
                 {
-                    ExcelWorksheet _tempWorksheet = package.Workbook.Worksheets.Add(kv.Key);
+                    ExcelWorksheet _tempWorksheet =package.Workbook.Worksheets[kv.Key] ==null ? package.Workbook.Worksheets.Add(kv.Key) : package.Workbook.Worksheets[kv.Key];
                     addHeader(_tempWorksheet, kv, Program.selectedDate);
                     var lastRowIndex = 6 + kv.Value.Count + 5;
                     using (ExcelRange Rng = _tempWorksheet.Cells[$"B6:L{lastRowIndex}"])
@@ -126,13 +134,15 @@ namespace ConsoleApplication
                     AddFooter(_tempWorksheet, lastRowIndex);
                 }
                 package.Save();
+				Console.WriteLine("Done");
+				Console.ReadLine();
             }
         }
 
         private void addHeader(ExcelWorksheet tempWorksheet, KeyValuePair<string, List<ReconnRec>> kv, DateTime selectedDate)
         {
             tempWorksheet.Cells["A1:L2"].Merge = true;
-            tempWorksheet.Cells["A1:L2"].Value = kv.Key;
+            tempWorksheet.Cells["A1:L2"].Value = kv.Key.ToUpper();
             tempWorksheet.Cells["A1:L2"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
             tempWorksheet.Cells["A1:L2"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
             tempWorksheet.Cells["A1:L2"].Style.Font.UnderLine = true;
@@ -142,8 +152,10 @@ namespace ConsoleApplication
             tempWorksheet.Cells["A1:L2"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
             tempWorksheet.Cells["A1:L2"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(216, 216, 216));
 
-            tempWorksheet.Cells["A3:L4"].Merge = true;
-            tempWorksheet.Cells["A3:L4"].Value = $"Daily Order Delivery Report For {Program.selectedDate.ToString("dd-MM-yyyy")}";
+            tempWorksheet.Cells["A3:L4"].Merge = true; 
+			 double daysCount= (Program.endDate - Program.startDate).TotalDays;
+            //tempWorksheet.Cells["A3:L4"].Value = daysCount $"FortnightlyOrder Delivery Report From {Program.startDate.ToString("dd-MM-yyyy")} to {Program.endDate.ToString("dd-MM-yyyy")}";
+			tempWorksheet.Cells["A3:L4"].Value =  (daysCount > 7.0 ? "Fortnightly" : "Weekly" ) + $"Order Delivery Report From {Program.startDate.ToString("dd-MM-yyyy")} to {Program.endDate.ToString("dd-MM-yyyy")}";
             tempWorksheet.Cells["A3:L4"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
             tempWorksheet.Cells["A3:L4"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Top;
             tempWorksheet.Cells["A3:L4"].Style.Font.UnderLine = true;
@@ -197,7 +209,14 @@ namespace ConsoleApplication
                 tempWorksheet.Cells[row, col++].Value = rec.Actual_order_Status;
                 tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Order_Amount) ? 0 : Convert.ToDouble(rec.Order_Amount);
                 tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Delivery_charges) ? 0 : Convert.ToDouble(rec.Delivery_charges);
+				try{
                 tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Actual_Amount_paid_to_vendor) ? 0 : Convert.ToDouble(rec.Actual_Amount_paid_to_vendor);
+				}
+				catch(Exception ex)
+				{
+					Console.WriteLine(ex.Message+" "+rec.Outlet_Name+" "+rec.Delivery_Date);
+					Console.ReadLine();
+				}
                 tempWorksheet.Cells[row++, col++].Value = rec.Remarks_Supervisor;
             }
         }
@@ -209,7 +228,7 @@ namespace ConsoleApplication
             tempWorksheet.Cells[$"A5:L{lastRowIndex}"].Style.Font.SetFromFont(new Font("Calibri", 11));
 
             tempWorksheet.Cells[$"A7:L{lastRowIndex}"].Style.Font.Color.SetColor(Color.FromArgb(48, 84, 150));
-            tempWorksheet.Column(10).Hidden = true;
+            tempWorksheet.Column(8).Hidden = true;
             tempWorksheet.Cells[$"F{lastRowIndex}"].Value = "Cash To Be Paid";
             tempWorksheet.Cells[$"F{lastRowIndex}"].Style.Font.UnderLine = true;
             tempWorksheet.Cells[$"F{lastRowIndex}"].Style.Font.Bold = true;
@@ -241,7 +260,7 @@ namespace ConsoleApplication
                         string outletName = workSheet.Name;
                         List<ReconnRec> temp;
 
-                        if (!recordList.TryGetValue(outletName, out temp))
+                        if (!recordList.TryGetValue(textInfo.ToTitleCase(outletName.ToLower().Trim()), out temp))
                         {
                             foreach (var item in otherNamesForSameOutlet)
                             {
@@ -260,7 +279,7 @@ namespace ConsoleApplication
                         if (temp == null)
                         {
                             temp = new List<ReconnRec>();
-                            recordList[outletName] = temp;
+                            recordList[textInfo.ToTitleCase(outletName.ToLower().Trim())] = temp;  
                         }
 
                         for (int i = 2; i <= workSheet.Dimension.Rows; i++)

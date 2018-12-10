@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using ConsoleApp1;
+
 
 namespace AspNetCoreService.Pages
 {
@@ -7,7 +7,7 @@ namespace AspNetCoreService.Pages
     {
         public void OnGet()
         {
-            ConsoleApp1.Program.Main(null);
+            Program.Main(null);
         }
     }
 }

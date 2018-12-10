@@ -64,6 +64,9 @@ namespace ConsoleApplication
         [DisplayName("Delivery charges")]
         public string Delivery_charges { get; set; }
 
+        [DisplayName("Bulk Order charges")]
+        public string Bulk_Order_charges { get; set; }
+
         [DisplayName("Actual Amount paid to vendor")]
         public string Actual_Amount_paid_to_vendor { get; set; }
 

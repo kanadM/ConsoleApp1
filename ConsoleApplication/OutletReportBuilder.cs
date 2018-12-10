@@ -20,17 +20,11 @@ namespace ConsoleApplication
         List<string> dontConsider = new List<string> { "Master", "Delivery-Charges", "Supervisor Report", "Cash to Vendors" };
 
         public IList<string> Errors
-
         {
-
             get
-
             {
-
                 return ErrorMessages;
-
             }
-
         }
 
         private string reconFilePath { get; set; }
@@ -102,7 +96,7 @@ namespace ConsoleApplication
                     ExcelWorksheet _tempWorksheet = package.Workbook.Worksheets.Add(kv.Key);
                     addHeader(_tempWorksheet, kv, Program.selectedDate);
                     var lastRowIndex = 6 + kv.Value.COD.Count + kv.Value.PRE_PAID.Count + 5;
-                    using (ExcelRange Rng = _tempWorksheet.Cells[$"B6:L{lastRowIndex}"])
+                    using (ExcelRange Rng = _tempWorksheet.Cells[$"B6:M{lastRowIndex}"])
                     {
                         //Indirectly access ExcelTableCollection class  
                         ExcelTable table = _tempWorksheet.Tables.Add(Rng, kv.Key.Replace(" ", ""));
@@ -118,12 +112,13 @@ namespace ConsoleApplication
                         table.Columns[8].Name = "Column9";
                         table.Columns[9].Name = "Column10";
                         table.Columns[10].Name = "Column11";
+                        table.Columns[11].Name = "Column12";
                         table.ShowFilter = true;
-                        table.ShowTotal = false; 
+                        table.ShowTotal = false;
                     }
                     using (ExcelRange Rng = _tempWorksheet.Cells[$"A6:A{lastRowIndex}"])
-                    {  
-                        ExcelTable table = _tempWorksheet.Tables.Add(Rng, kv.Key.Replace(" ", "")+"Sr");
+                    {
+                        ExcelTable table = _tempWorksheet.Tables.Add(Rng, kv.Key.Replace(" ", "") + "Sr");
                         table.TableStyle = TableStyles.Light6;
                         table.Columns[0].Name = "Column1";
                         table.ShowFilter = true;
@@ -141,27 +136,28 @@ namespace ConsoleApplication
 
         private void addHeader(ExcelWorksheet tempWorksheet, KeyValuePair<string, ReconWorksheet> kv, DateTime selectedDate)
         {
-            tempWorksheet.Cells["A1:L2"].Merge = true;
-            tempWorksheet.Cells["A1:L2"].Value = kv.Key;
-            tempWorksheet.Cells["A1:L2"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-            tempWorksheet.Cells["A1:L2"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-            tempWorksheet.Cells["A1:L2"].Style.Font.UnderLine = true;
-            tempWorksheet.Cells["A1:L2"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Double;
-            tempWorksheet.Cells["A1:L2"].Style.Font.Bold = true;
-            tempWorksheet.Cells["A1:L2"].Style.Font.Size = 11;
-            tempWorksheet.Cells["A1:L2"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-            tempWorksheet.Cells["A1:L2"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(216, 216, 216));
-
-            tempWorksheet.Cells["A3:L4"].Merge = true;
-            tempWorksheet.Cells["A3:L4"].Value = $"Daily Order Delivery Report For {Program.selectedDate.ToString("dd-MM-yyyy")}";
-            tempWorksheet.Cells["A3:L4"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-            tempWorksheet.Cells["A3:L4"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Top;
-            tempWorksheet.Cells["A3:L4"].Style.Font.UnderLine = true;
-            tempWorksheet.Cells["A3:L4"].Style.Font.Italic = true;
-            tempWorksheet.Cells["A3:L4"].Style.Font.Bold = true;
-            tempWorksheet.Cells["A3:L4"].Style.Font.Size = 14;
-            tempWorksheet.Cells["A3:L4"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-            tempWorksheet.Cells["A3:L4"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(216, 216, 216));
+            string LIMIT = "A1:L2";
+            tempWorksheet.Cells[LIMIT].Merge = true;
+            tempWorksheet.Cells[LIMIT].Value = kv.Key;
+            tempWorksheet.Cells[LIMIT].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+            tempWorksheet.Cells[LIMIT].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+            tempWorksheet.Cells[LIMIT].Style.Font.UnderLine = true;
+            tempWorksheet.Cells[LIMIT].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Double;
+            tempWorksheet.Cells[LIMIT].Style.Font.Bold = true;
+            tempWorksheet.Cells[LIMIT].Style.Font.Size = 11;
+            tempWorksheet.Cells[LIMIT].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+            tempWorksheet.Cells[LIMIT].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(216, 216, 216));
+            LIMIT = "A3:L4";
+            tempWorksheet.Cells[LIMIT].Merge = true;
+            tempWorksheet.Cells[LIMIT].Value = $"Daily Order Delivery Report For {Program.selectedDate.ToString("dd-MM-yyyy")}";
+            tempWorksheet.Cells[LIMIT].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+            tempWorksheet.Cells[LIMIT].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Top;
+            tempWorksheet.Cells[LIMIT].Style.Font.UnderLine = true;
+            tempWorksheet.Cells[LIMIT].Style.Font.Italic = true;
+            tempWorksheet.Cells[LIMIT].Style.Font.Bold = true;
+            tempWorksheet.Cells[LIMIT].Style.Font.Size = 14;
+            tempWorksheet.Cells[LIMIT].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+            tempWorksheet.Cells[LIMIT].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(216, 216, 216));
 
             tempWorksheet.Cells[5, 1].Value = "Sr No.";
             tempWorksheet.Cells[5, 2].Value = "Order Id";
@@ -173,30 +169,31 @@ namespace ConsoleApplication
             tempWorksheet.Cells[5, 8].Value = "Actual order Status";
             tempWorksheet.Cells[5, 9].Value = "IRCTC Dashboard Amount";
             tempWorksheet.Cells[5, 10].Value = "Delivery charges";
-            tempWorksheet.Cells[5, 11].Value = "Trapigo Payment to vendor";
-            tempWorksheet.Cells[5, 12].Value = "Remarks";
+            tempWorksheet.Cells[5, 11].Value = "Bulk Order Charges";
+            tempWorksheet.Cells[5, 12].Value = "Trapigo Payment to vendor";
+            tempWorksheet.Cells[5, 13].Value = "Remarks";
 
-            tempWorksheet.Cells["A5:L5"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-            tempWorksheet.Cells["A5:L5"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-            tempWorksheet.Cells["A5:L5"].Style.Font.Bold = true;
-            tempWorksheet.Cells["A5:L5"].Style.Font.Size = 11;
+            tempWorksheet.Cells["A5:M5"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+            tempWorksheet.Cells["A5:M5"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+            tempWorksheet.Cells["A5:M5"].Style.Font.Bold = true;
+            tempWorksheet.Cells["A5:M5"].Style.Font.Size = 11;
             tempWorksheet.Cells["A5:J5"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
             tempWorksheet.Cells["A5:J5"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 0, 0));
             tempWorksheet.Cells["A5:J5"].Style.Font.Color.SetColor(Color.White);
 
-            tempWorksheet.Cells["K5:L5"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-            tempWorksheet.Cells["K5:L5"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 255, 0));
+            tempWorksheet.Cells["K5:M5"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+            tempWorksheet.Cells["K5:M5"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 255, 0));
 
 
         }
 
-        private void LoadPrePaidReconds(ExcelWorksheet tempWorksheet, List<ReconnRec> pRE_PAID,int COD_count)
+        private void LoadPrePaidReconds(ExcelWorksheet tempWorksheet, List<ReconnRec> pRE_PAID, int COD_count)
         {
-            int row = 7+COD_count, col = 1;
+            int row = 7 + COD_count, col = 1;
             foreach (var rec in pRE_PAID)
             {
                 col = 1;
-                tempWorksheet.Cells[row, col++].Value = Convert.ToDouble( COD_count + Convert.ToDouble(rec.Sr_No));
+                tempWorksheet.Cells[row, col++].Value = Convert.ToDouble(COD_count + Convert.ToDouble(rec.Sr_No));
                 tempWorksheet.Cells[row, col++].Value = Convert.ToDouble(rec.OrderId);
                 tempWorksheet.Cells[row, col++].Value = rec.Vendor_Name;
                 tempWorksheet.Cells[row, col++].Value = rec.Outlet_Name;
@@ -204,8 +201,9 @@ namespace ConsoleApplication
                 tempWorksheet.Cells[row, col++].Value = rec.Transaction_Type;
                 tempWorksheet.Cells[row, col++].Value = rec.Order_Status;
                 tempWorksheet.Cells[row, col++].Value = rec.Actual_order_Status;
-                tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Order_Amount) ? 0 : Convert.ToDouble(rec.Order_Amount);  
+                tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Order_Amount) ? 0 : Convert.ToDouble(rec.Order_Amount);
                 tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Delivery_charges) ? 0 : Convert.ToDouble(rec.Delivery_charges);
+                tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Bulk_Order_charges) ? 0 : Convert.ToDouble(rec.Bulk_Order_charges);
                 tempWorksheet.Cells[row, col++].Value = 0;
                 tempWorksheet.Cells[row++, col++].Value = rec.Remarks_Supervisor + " " + rec.Remarks_Reconcilor + " " + rec.Final_Remarks;
             }
@@ -227,20 +225,21 @@ namespace ConsoleApplication
                 tempWorksheet.Cells[row, col++].Value = rec.Transaction_Type;
                 tempWorksheet.Cells[row, col++].Value = rec.Order_Status;
                 tempWorksheet.Cells[row, col++].Value = rec.Actual_order_Status;
-                tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Order_Amount)? 0: Convert.ToDouble(rec.Order_Amount);
+                tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Order_Amount) ? 0 : Convert.ToDouble(rec.Order_Amount);
                 tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Delivery_charges) ? 0 : Convert.ToDouble(rec.Delivery_charges);
+                tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Bulk_Order_charges) ? 0 : Convert.ToDouble(rec.Bulk_Order_charges);
                 tempWorksheet.Cells[row, col++].Value = string.IsNullOrWhiteSpace(rec.Actual_Amount_paid_to_vendor) ? 0 : Convert.ToDouble(rec.Actual_Amount_paid_to_vendor);
-                tempWorksheet.Cells[row++, col++].Value = rec.Remarks_Supervisor + " "+ rec.Remarks_Reconcilor+" "+ rec.Final_Remarks;
+                tempWorksheet.Cells[row++, col++].Value = rec.Remarks_Supervisor + " " + rec.Remarks_Reconcilor + " " + rec.Final_Remarks;
             }
         }
 
-        private void AddFooter(ExcelWorksheet tempWorksheet,int lastRowIndex)
+        private void AddFooter(ExcelWorksheet tempWorksheet, int lastRowIndex)
         {
 
-            tempWorksheet.Cells[$"A5:L{lastRowIndex}"].AutoFitColumns();
-            tempWorksheet.Cells[$"A5:L{lastRowIndex}"].Style.Font.SetFromFont(new Font("Calibri", 11));
+            tempWorksheet.Cells[$"A5:M{lastRowIndex}"].AutoFitColumns();
+            tempWorksheet.Cells[$"A5:M{lastRowIndex}"].Style.Font.SetFromFont(new Font("Calibri", 11));
 
-            tempWorksheet.Cells[$"A7:L{lastRowIndex}"].Style.Font.Color.SetColor(Color.FromArgb(48, 84, 150));
+            tempWorksheet.Cells[$"A7:M{lastRowIndex}"].Style.Font.Color.SetColor(Color.FromArgb(48, 84, 150));
             tempWorksheet.Column(8).Hidden = true;
             tempWorksheet.Cells[$"F{lastRowIndex}"].Value = "Cash To Be Paid";
             tempWorksheet.Cells[$"F{lastRowIndex}"].Style.Font.UnderLine = true;
@@ -248,15 +247,15 @@ namespace ConsoleApplication
             tempWorksheet.Cells[$"F{lastRowIndex}"].Style.Font.Italic = true;
 
 
-            tempWorksheet.Cells[$"I{lastRowIndex}"].Value = "Total";
-            tempWorksheet.Cells[$"I{lastRowIndex}"].Style.Font.Bold = true;
-            tempWorksheet.Cells[$"I{lastRowIndex}"].Style.Font.Italic = true;
-            tempWorksheet.Cells[$"I{lastRowIndex}"].Style.Font.Color.SetColor(Color.Black);
+            tempWorksheet.Cells[$"J{lastRowIndex}"].Value = "Total";
+            tempWorksheet.Cells[$"J{lastRowIndex}"].Style.Font.Bold = true;
+            tempWorksheet.Cells[$"J{lastRowIndex}"].Style.Font.Italic = true;
+            tempWorksheet.Cells[$"J{lastRowIndex}"].Style.Font.Color.SetColor(Color.Black);
 
-            tempWorksheet.Cells[$"K{lastRowIndex}"].Formula = $"=Sum(K7:K{lastRowIndex-1})";
-            tempWorksheet.Cells[$"K{lastRowIndex}"].Style.Numberformat.Format = "#,##0.00";
-            tempWorksheet.Cells[$"K{lastRowIndex}"].Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-            tempWorksheet.Cells[$"K{lastRowIndex}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            tempWorksheet.Cells[$"L{lastRowIndex}"].Formula = $"=Sum(L7:L{lastRowIndex - 1})";
+            tempWorksheet.Cells[$"L{lastRowIndex}"].Style.Numberformat.Format = "#,##0.00";
+            tempWorksheet.Cells[$"L{lastRowIndex}"].Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            tempWorksheet.Cells[$"L{lastRowIndex}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
 
         }
 
@@ -266,7 +265,7 @@ namespace ConsoleApplication
 
             using (ExcelPackage OrderMISPkg = new ExcelPackage(new FileInfo(reconFilePath)))
             {
-
+                decimal trying;
                 foreach (var workSheet in OrderMISPkg.Workbook.Worksheets)
                 {
                     if (dontConsider.Contains(workSheet.Name))
@@ -278,7 +277,7 @@ namespace ConsoleApplication
                     {
                         if (string.IsNullOrWhiteSpace(workSheet.Cells[i, 2].Value?.ToString()))
                             continue;
-                        if (workSheet.Cells[i, 6].Value?.ToString() == "CASH_ON_DELIVERY")
+                        if (workSheet.Cells[i, 6].Value?.ToString() == "CASH_ON_DELIVERY" || (workSheet.Cells[i, 6].Value?.ToString() == "PRE_PAID" && Decimal.TryParse(workSheet.Cells[i, 12].Value?.ToString(), out trying)))
                         {
                             var tempRec = new ReconnRec();
                             tempRec.Sr_No = workSheet.Cells[i, 1].Value?.ToString();
@@ -291,11 +290,12 @@ namespace ConsoleApplication
                             tempRec.Actual_order_Status = workSheet.Cells[i, 8].Value?.ToString();
                             tempRec.Order_Amount = workSheet.Cells[i, 9].Value?.ToString();
                             tempRec.Delivery_charges = workSheet.Cells[i, 10].Value?.ToString();
-                            tempRec.Actual_Amount_paid_to_vendor = workSheet.Cells[i, 11].Value?.ToString();
-                            tempRec.Canclled_Order_Disc_Remarks_Supervisor = workSheet.Cells[i, 12].Value?.ToString();
-                            tempRec.Remarks_Supervisor = workSheet.Cells[i, 13].Value?.ToString();
-                            tempRec.Remarks_Reconcilor = workSheet.Cells[i, 14].Value?.ToString();
-                            tempRec.Final_Remarks = workSheet.Cells[i, 15].Value?.ToString();
+                            tempRec.Bulk_Order_charges = workSheet.Cells[i, 11].Value?.ToString();
+                            tempRec.Actual_Amount_paid_to_vendor = workSheet.Cells[i, 12].Value?.ToString();
+                            tempRec.Canclled_Order_Disc_Remarks_Supervisor = workSheet.Cells[i, 13].Value?.ToString();
+                            tempRec.Remarks_Supervisor = workSheet.Cells[i, 14].Value?.ToString();
+                            tempRec.Remarks_Reconcilor = workSheet.Cells[i, 15].Value?.ToString();
+                            tempRec.Final_Remarks = workSheet.Cells[i, 16].Value?.ToString();
                             temp.COD.Add(tempRec);
                         }
                         else if (workSheet.Cells[i, 6].Value?.ToString() == "PRE_PAID")
@@ -311,9 +311,10 @@ namespace ConsoleApplication
                             tempPrePaidRec.Actual_order_Status = workSheet.Cells[i, 8].Value?.ToString();
                             tempPrePaidRec.Order_Amount = workSheet.Cells[i, 9].Value?.ToString();
                             tempPrePaidRec.Delivery_charges = workSheet.Cells[i, 10].Value?.ToString();
-                            tempPrePaidRec.Remarks_Supervisor = workSheet.Cells[i, 11].Value?.ToString();
-                            tempPrePaidRec.Remarks_Reconcilor = workSheet.Cells[i, 12].Value?.ToString();
-                            tempPrePaidRec.Final_Remarks = workSheet.Cells[i, 13].Value?.ToString();
+                            tempPrePaidRec.Bulk_Order_charges = workSheet.Cells[i, 11].Value?.ToString();
+                            tempPrePaidRec.Remarks_Supervisor = workSheet.Cells[i, 12].Value?.ToString();
+                            tempPrePaidRec.Remarks_Reconcilor = workSheet.Cells[i, 13].Value?.ToString();
+                            tempPrePaidRec.Final_Remarks = workSheet.Cells[i, 14].Value?.ToString();
                             temp.PRE_PAID.Add(tempPrePaidRec);
                         }
                     }
