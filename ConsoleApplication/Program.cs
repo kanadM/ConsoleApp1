@@ -179,7 +179,11 @@ namespace ConsoleApplication
                             }
 
                             taskDirectory = new DirectoryInfo(dateWiseDirectory.GivenDataDirectory());
-                            if (taskDirectory.GetFiles("*Order-MIS*").Any() && taskDirectory.GetFiles("*Super*").Any())
+
+                            if (!taskDirectory.GetFiles("Order-MIS*").Any())
+                                ReportDownloader.GetMasterReport(taskDirectory.FullName + "Order - MIS.xlsx", selectedDate, selectedDate, STN);
+
+                            if (taskDirectory.GetFiles("Order-MIS*").Any() && taskDirectory.GetFiles("*Super*").Any())
                             {
                                 taskFile = taskDirectory.GetFiles("*Order-MIS*").FirstOrDefault();
                                 MasterFilePath = taskFile.FullName;
@@ -214,7 +218,10 @@ namespace ConsoleApplication
                             for (selectedDate = startDate; selectedDate <= endDate; selectedDate = selectedDate.AddDays(1))
                             {
                                 taskDirectory = new DirectoryInfo(dateWiseDirectory.GivenDataDirectory());
-                                if (taskDirectory.GetFiles("*Order-MIS*").Any() && taskDirectory.GetFiles("*Super*").Any())
+                                if (!taskDirectory.GetFiles("Order-MIS*").Any())
+                                    ReportDownloader.GetMasterReport(taskDirectory.FullName + "Order - MIS.xlsx", selectedDate, selectedDate, STN);
+
+                                if (taskDirectory.GetFiles("Order-MIS*").Any() && taskDirectory.GetFiles("*Super*").Any())
                                 {
                                     taskFile = taskDirectory.GetFiles("*Order-MIS*").FirstOrDefault();
                                     MasterFilePath = taskFile.FullName;
@@ -249,6 +256,7 @@ namespace ConsoleApplication
 
                             for (selectedDate = startDate; selectedDate <= endDate; selectedDate = selectedDate.AddDays(1))
                             {
+
                                 taskDirectory = new DirectoryInfo(dateWiseDirectory);
                                 if (taskDirectory.GetFiles("*Recon_*").Any())
                                 {
