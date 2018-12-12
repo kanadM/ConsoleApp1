@@ -32,7 +32,7 @@ namespace ConsoleApplication
         {
             master = _master;
             supervisor = _supervisor;
-            //convert csv to xlxs
+            //convert csv to xlsx
             if (master.Contains("csv"))
             {
                 List<string[]> x = File.ReadAllLines(master)

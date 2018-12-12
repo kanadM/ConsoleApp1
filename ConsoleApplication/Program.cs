@@ -339,6 +339,52 @@ namespace ConsoleApplication
                             }
                             MergeOutletReports();
                             break;
+                        case 8:
+                            bool isoddRowExist = false, isFooterExist = false;
+                            string stringOfOutletHtml = File.ReadAllText(@"C:\Users\kmehta\source\repos\ConsoleApp1\ConsoleApplication\Templates\HTML\OutletReport.html");
+                            string stringOfOutlet_evenHtml = File.ReadAllText(@"C:\Users\kmehta\source\repos\ConsoleApp1\ConsoleApplication\Templates\HTML\OutletReport_evenRow.html");
+                            string stringOfOutlet_oddHtml = File.ReadAllText(@"C:\Users\kmehta\source\repos\ConsoleApp1\ConsoleApplication\Templates\HTML\OutletReport_oddRow.html");
+                            string stringOfOutlet_footerHtml = File.ReadAllText(@"C:\Users\kmehta\source\repos\ConsoleApp1\ConsoleApplication\Templates\HTML\OutletReport_footer.html");
+
+                            stringOfOutletHtml = stringOfOutletHtml.Replace("{evenRows}", stringOfOutlet_evenHtml);
+
+                            stringOfOutletHtml = isoddRowExist ? stringOfOutletHtml.Replace("{oddRows}", stringOfOutlet_oddHtml) : stringOfOutletHtml.Replace("{oddRows}", string.Empty);
+                            stringOfOutletHtml = isFooterExist ? stringOfOutletHtml.Replace("{footer}", stringOfOutlet_footerHtml) : stringOfOutletHtml.Replace("{footer}", string.Empty);
+
+
+                            Mail.SendEmail("Kanad", "kanad.mehta92@gmail.com", new List<string> { "metha.namu1992@gmail.com" }, "This is test subject of test email", stringOfOutletHtml);
+                            break;
+                        case 9:
+                            Console.WriteLine("Enter Start Date");
+                            DateTime.TryParse(Console.ReadLine(), out startDate);
+                            while (startDate == DateTime.MinValue)
+                            {
+                                Console.WriteLine("Wrong!!; Please Enter Date again");
+                                DateTime.TryParse(Console.ReadLine(), out startDate);
+                            }
+
+                            Console.WriteLine("Enter End Date");
+                            DateTime.TryParse(Console.ReadLine(), out endDate);
+                            while (endDate == DateTime.MinValue)
+                            {
+                                Console.WriteLine("Wrong!!; Please Enter Date again");
+                                DateTime.TryParse(Console.ReadLine(), out endDate);
+                            }
+
+                            String masterFileName = $"Order-MIS.xlsx";
+                            if (startDate == endDate)
+                            {
+                                selectedDate = startDate;
+                                taskDirectory = new DirectoryInfo(dateWiseDirectory.GivenDataDirectory());
+                                ReportDownloader.GetMasterReport(taskDirectory.FullName + masterFileName, selectedDate, selectedDate, STN);
+                            }
+                            else
+                            {
+                                masterFileName = $"Order-MIS-{STN}-{startDate.ToString("dd-MM-yy")}_{endDate.ToString("dd-MM-yy")}";
+                                taskDirectory = new DirectoryInfo(dateWiseDirectory.GivenDataDirectory());
+                                ReportDownloader.GetMasterReport(taskDirectory.FullName + "\\" + masterFileName, startDate, endDate, STN);
+                            }
+                            break;
                         default:
                             Console.WriteLine("Wrong, Please Enter choice code again valid options are [1,2,3,4]");
                             goto again;
@@ -374,7 +420,7 @@ namespace ConsoleApplication
         }
         private static void MergeOutletReports()
         {
-            MergedOutletReportBuilder rb = new MergedOutletReportBuilder(MasterFilePath,OutletWiseReportFilePaths);
+            MergedOutletReportBuilder rb = new MergedOutletReportBuilder(MasterFilePath, OutletWiseReportFilePaths);
             foreach (var item in otherOutletNames)
                 rb.otherNamesForSameOutlet.Add(item.Key, item.Value?.ToString().Split("$$").ToList());
 
